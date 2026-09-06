@@ -1,7 +1,8 @@
+import os
 import requests
 
 HUGGINGFACE_API_URL = "https://api-inference.huggingface.co/models/google/vit-base-patch16-224"
-HUGGINGFACE_API_KEY = "***REMOVED***"# replace this securely
+HUGGINGFACE_API_KEY = os.getenv("HF_API_KEY")
 SUMMARIZATION_API_URL = "https://api-inference.huggingface.co/models/facebook/bart-large-cnn"
 #ASR_API_URL = "https://api-inference.huggingface.co/models/facebook/wav2vec2-base-960h"
 #ASR_API_URL = "https://api-inference.huggingface.co/models/openai/whisper-base"
@@ -9,11 +10,17 @@ SUMMARIZATION_API_URL = "https://api-inference.huggingface.co/models/facebook/ba
 #ASR_API_URL = "https://api-inference.huggingface.co/models/jonatasgrosman/wav2vec2-large-xlsr-53-english"
 #ASR_API_URL = "https://api-inference.huggingface.co/models/Xenova/whisper-tiny.en"
 ASR_API_URL = "https://api-inference.huggingface.co/models/jonatasgrosman/wav2vec2-large-xlsr-53-english"
-def classify_image(image_bytes: bytes):
-    headers = {
+
+def get_hf_headers(content_type: str):
+    if not HUGGINGFACE_API_KEY:
+        raise RuntimeError("HF_API_KEY environment variable is not set.")
+    return {
         "Authorization": f"Bearer {HUGGINGFACE_API_KEY}",
-        "Content-Type": "image/png"  # Change to "image/jpeg" if needed
+        "Content-Type": content_type
     }
+
+def classify_image(image_bytes: bytes):
+    headers = get_hf_headers("image/png")
     response = requests.post(HUGGINGFACE_API_URL, headers=headers, data=image_bytes, timeout=30)
     print("Status code:", response.status_code)
     print("Response text:", response.text)
@@ -71,10 +78,7 @@ def classify_image(image_bytes: bytes):
         raise
     return response.json()"""
 def transcribe_audio(audio_bytes):
-    headers = {
-        "Authorization": f"Bearer {HUGGINGFACE_API_KEY}",
-        "Content-Type": "audio/wav"
-    }
+    headers = get_hf_headers("audio/wav")
     try:
         response = requests.post(ASR_API_URL, headers=headers, data=audio_bytes, timeout=30)
         print("Status code:", response.status_code)
@@ -95,10 +99,7 @@ def transcribe_audio(audio_bytes):
 
 def summarize_text(text):
     print("summarize_text called with:", text)
-    headers = {
-        "Authorization": f"Bearer {HUGGINGFACE_API_KEY}",
-        "Content-Type": "application/json"
-    }
+    headers = get_hf_headers("application/json")
     payload = {"inputs": text}
     response = requests.post(SUMMARIZATION_API_URL, headers=headers, json=payload, timeout=30)
     print("Status code:", response.status_code)

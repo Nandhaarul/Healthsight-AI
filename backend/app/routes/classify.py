@@ -22,7 +22,7 @@ import requests
 router = APIRouter()
 
 HF_API_URL = "https://api-inference.huggingface.co/models/shashankbhat/dermnet-skin-disease-classifier-vit-base-patch16-224"
-HF_API_KEY = "***REMOVED***"  # Replace with your key
+HF_API_KEY = os.getenv("HF_API_KEY")
 
 @router.post("/classify-image/")
 async def classify_image(image: UploadFile = File(...)):
@@ -51,7 +51,7 @@ import requests
 router = APIRouter()
 
 HF_API_URL = "https://api-inference.huggingface.co/models/shashankbhat/dermnet-skin-disease-classifier-vit-base-patch16-224"
-HF_API_KEY = "***REMOVED***"
+HF_API_KEY = os.getenv("HF_API_KEY")
 
 @router.post("/classify-image/")
 async def classify_image(image: UploadFile = File(...)):
@@ -84,7 +84,7 @@ router = APIRouter()
 logger = logging.getLogger(__name__)
 
 HF_API_URL = "https://api-inference.huggingface.co/models/shashankbhat/dermnet-skin-disease-classifier-vit-base-patch16-224"
-HF_API_KEY = "***REMOVED***"
+HF_API_KEY = os.getenv("HF_API_KEY")
 
 @router.post("/classify-image/")
 async def classify_image(image: UploadFile = File(...)):
@@ -114,7 +114,7 @@ import requests
 router = APIRouter()
 logger = logging.getLogger(__name__)
 
-HF_API_KEY = "***REMOVED***"
+HF_API_KEY = os.getenv("HF_API_KEY")
 
 # Try one of these; start with the beans model to verify end‑to‑end, then switch.
 MODEL_NAME = "nateraw/vit-base-beans"  # change to "akhaliq/dermnet_vit_base_patch16_224" after test
@@ -162,7 +162,7 @@ import requests
 router = APIRouter()
 logger = logging.getLogger(__name__)
 
-HF_API_KEY = "***REMOVED***"
+HF_API_KEY = os.getenv("HF_API_KEY")
 
 MODEL_NAME = "nateraw/vit-base-beans"  # test model
 HF_API_URL = f"https://api-inference.huggingface.co/models/{MODEL_NAME}"
@@ -234,7 +234,7 @@ router = APIRouter()
 log = logging.getLogger("classify")
 logging.basicConfig(level=logging.INFO)
 
-HF_API_KEY = os.getenv("HF_API_KEY", "***REMOVED***")
+HF_API_KEY = os.getenv("HF_API_KEY")
 
 """FALLBACK_MODELS = [
     "nateraw/vit-base-beans",              # sanity test (should work)
@@ -253,6 +253,8 @@ RETRIES = 3
 BACKOFF = 4
 
 def call_model(image_bytes: bytes, model: str):
+    if not HF_API_KEY:
+        raise HTTPException(status_code=500, detail="HF_API_KEY environment variable is not set.")
     url = f"https://api-inference.huggingface.co/models/{model}"
     headers = {
         "Authorization": f"Bearer {HF_API_KEY}",

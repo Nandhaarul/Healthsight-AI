@@ -1,9 +1,10 @@
 from fastapi import APIRouter, HTTPException
 from pydantic import BaseModel
+import os
 import requests
 
 DOCQA_API_URL = "https://api-inference.huggingface.co/models/deepset/roberta-base-squad2"
-HUGGINGFACE_API_KEY = "***REMOVED***"
+HUGGINGFACE_API_KEY = os.getenv("HF_API_KEY")
 
 router = APIRouter()
 
@@ -13,6 +14,8 @@ class DocQARequest(BaseModel):
 
 @router.post("/docqa/")
 async def docqa_endpoint(request: DocQARequest):
+    if not HUGGINGFACE_API_KEY:
+        raise HTTPException(status_code=500, detail="HF_API_KEY environment variable is not set.")
     headers = {
         "Authorization": f"Bearer {HUGGINGFACE_API_KEY}",
         "Content-Type": "application/json"
