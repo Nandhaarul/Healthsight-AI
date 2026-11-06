@@ -9,3 +9,5 @@ __pycache__/
 .env
 output/
 tmp/
+temp.wav
+bfg-1.14.0.jar
