@@ -1,0 +1,11 @@
+.git
+.gitignore
+venv/
+venv310/
+node_modules/
+healthsight-frontend/node_modules/
+__pycache__/
+*.pyc
+.env
+output/
+tmp/

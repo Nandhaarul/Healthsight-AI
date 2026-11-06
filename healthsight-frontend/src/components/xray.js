@@ -2,7 +2,8 @@
 
 import React, { useState } from "react";
 import axios from "axios";
-
+const API_BASE_URL =
+  process.env.REACT_APP_API_URL || "http://127.0.0.1:8000";
 function XrayAnalysis() {
   const [xrayFile, setXrayFile] = useState(null);
   const [xrayResult, setXrayResult] = useState(null);
@@ -19,7 +20,7 @@ function XrayAnalysis() {
     const formData = new FormData();
     formData.append("image", xrayFile);
     try {
-      const res = await axios.post("http://127.0.0.1:8000/classify-xray/", formData, {
+      const res = await axios.post(`${API_BASE_URL}/classify-xray/`, formData, {
         headers: { "Content-Type": "multipart/form-data" },
       });
       setXrayResult(res.data.predictions);

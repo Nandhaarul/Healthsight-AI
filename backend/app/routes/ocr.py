@@ -4,8 +4,10 @@ from fastapi import APIRouter, UploadFile, File, HTTPException
 from PIL import Image
 import pytesseract
 import io
-pytesseract.pytesseract.tesseract_cmd = r"C:\Program Files\Tesseract-OCR\tesseract.exe"
-
+import os
+tesseract_path = os.getenv("TESSERACT_CMD")
+if tesseract_path:
+    pytesseract.pytesseract.tesseract_cmd = tesseract_path
 router = APIRouter()
 
 @router.post("/ocr/")

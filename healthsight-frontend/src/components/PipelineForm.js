@@ -1,7 +1,8 @@
 import React, { useState, useRef } from "react";
 import axios from "axios";
 import XrayAnalysis from "./xray";
-
+const API_BASE_URL =
+  process.env.REACT_APP_API_URL || "http://127.0.0.1:8000";
 // Utility: Clean up stray single letters and artifacts from text
 function cleanText(text) {
   if (!text) return "";
@@ -64,7 +65,7 @@ function PipelineForm() {
   const detectObjectsAPI = async (imageFile) => {
     const formData = new FormData();
     formData.append("image", imageFile);
-    const res = await axios.post("http://127.0.0.1:8000/detect-objects/", formData, {
+    const res = await axios.post(`${API_BASE_URL}/detect-objects/`, formData, {
       headers: { "Content-Type": "multipart/form-data" },
     });
     return res.data;
@@ -161,7 +162,7 @@ function PipelineForm() {
         try {
           setClassifyLoading(true);
           const classifyRes = await axios.post(
-            "http://127.0.0.1:8000/classify-image-local/",
+            `${API_BASE_URL}/classify-image-local/`,
             classifyForm,
             { headers: { "Content-Type": "multipart/form-data" } }
           );
@@ -182,7 +183,7 @@ function PipelineForm() {
     formData.append("question", question);
 
     try {
-      const res = await axios.post("http://127.0.0.1:8000/pipeline/", formData, {
+      const res = await axios.post(`${API_BASE_URL}/pipeline/`, formData, {
         headers: { "Content-Type": "multipart/form-data" },
       });
       setResult({ ...res.data, classify: classifyData });
@@ -198,7 +199,7 @@ function PipelineForm() {
     setZeroShotLoading(true);
     try {
       const zsRes = await axios.post(
-        "http://127.0.0.1:8000/zero-shot-classify/",
+        `${API_BASE_URL}/zero-shot-classify/`,
         { text: question }
       );
       setZeroShotResult(zsRes.data);
@@ -243,7 +244,7 @@ function PipelineForm() {
     formData.append("audio", audioBlob, "symptoms.wav");
     try {
       const res = await axios.post(
-        "http://127.0.0.1:8000/transcribe-audio/",
+        `${API_BASE_URL}/transcribe-audio/`,
         formData,
         { headers: { "Content-Type": "multipart/form-data" } }
       );
@@ -264,7 +265,7 @@ function PipelineForm() {
     formData.append("audio", audioBlob, "cough.wav");
     try {
       const res = await axios.post(
-        "http://127.0.0.1:8000/classify-cough/",
+        `${API_BASE_URL}/classify-cough/`,
         formData,
         { headers: { "Content-Type": "multipart/form-data" } }
       );

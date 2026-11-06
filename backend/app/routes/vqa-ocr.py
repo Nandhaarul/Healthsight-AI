@@ -3,10 +3,13 @@
 from fastapi import APIRouter, UploadFile, File, Form, HTTPException
 from PIL import Image
 import pytesseract
-pytesseract.pytesseract.tesseract_cmd = r"C:\Program Files\Tesseract-OCR\tesseract.exe"
 import io
 import re
+import os
 
+tesseract_path = os.getenv("TESSERACT_CMD")
+if tesseract_path:
+    pytesseract.pytesseract.tesseract_cmd = tesseract_path
 router = APIRouter()
 
 @router.post("/vqa/")
