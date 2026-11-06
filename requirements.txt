@@ -4,7 +4,7 @@ python-multipart
 requests
 pillow
 pytesseract
-transformers
+transformers==4.55.4
 torch==2.8.0
 torchvision==0.23.0
 torchaudio==2.8.0
